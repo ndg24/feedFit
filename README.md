@@ -2,11 +2,6 @@
 
 A web app that helps users determine which photo better fits their feed's aesthetic. Upload your Instagram feed screenshot and two candidate photos, and let FeedFit analyze which one matches your visual style better.
 
-![FeedFit Demo](https://img.shields.io/badge/Status-Demo%20Ready-brightgreen)
-![React](https://img.shields.io/badge/React-18.3.1-blue)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.5.3-blue)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4.11-38B2AC)
-
 ## ✨ Features
 
 - **🎨 Aesthetic Analysis**: Compare photos against your Instagram feed aesthetic
