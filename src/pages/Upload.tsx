@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { Upload as UploadIcon, Image, ArrowLeft, Sparkles } from "lucide-react";
+import { API_ENDPOINTS } from "@/config/api";
 
 interface UploadedFile {
   file: File;
@@ -95,7 +96,7 @@ const Upload = () => {
       setProgress(20);
 
       // Make API request to backend
-      const response = await fetch('http://localhost:8000/compare', {
+      const response = await fetch(API_ENDPOINTS.compare, {
         method: 'POST',
         body: formData,
       });

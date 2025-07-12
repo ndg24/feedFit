@@ -10,9 +10,14 @@ from sklearn.feature_extraction import image as skimage
 import logging
 from typing import List, Tuple
 import uvicorn
+import os
+from security_config import (
+    get_cors_origins, MAX_FILE_SIZE, ALLOWED_IMAGE_EXTENSIONS, 
+    ALLOWED_IMAGE_TYPES, LOG_LEVEL, SECURITY_HEADERS
+)
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=getattr(logging, LOG_LEVEL))
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
@@ -21,19 +26,32 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Add CORS middleware
+# Add CORS middleware with environment-based origins
+ALLOWED_ORIGINS = get_cors_origins()
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8080", "http://127.0.0.1:8080"],  # Frontend URLs
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST"],  # Only allow necessary methods
+    allow_headers=["Content-Type"],  # Only allow necessary headers
 )
 
 def validate_image(file: UploadFile) -> bool:
     """Validate that the uploaded file is an image."""
-    if not file.content_type or not file.content_type.startswith('image/'):
+    # Check content type
+    if not file.content_type or file.content_type not in ALLOWED_IMAGE_TYPES:
         return False
+    
+    # Check file size
+    if file.size and file.size > MAX_FILE_SIZE:
+        return False
+    
+    # Check file extension
+    file_extension = os.path.splitext(file.filename or '')[1].lower()
+    if file_extension not in ALLOWED_IMAGE_EXTENSIONS:
+        return False
+    
     return True
 
 def extract_color_palette(image_bytes: bytes, num_colors: int = 8) -> List[Tuple[int, int, int]]:
@@ -107,10 +125,18 @@ async def compare_images(
                 detail="All files must be valid images (PNG, JPEG, etc.)"
             )
         
-        # Read image bytes
+        # Read image bytes with size limits
         feed_bytes = await feed_image.read()
+        if len(feed_bytes) > MAX_FILE_SIZE:
+            raise HTTPException(status_code=400, detail=f"Feed image too large (max {MAX_FILE_SIZE // (1024*1024)}MB)")
+            
         image_a_bytes = await image_a.read()
+        if len(image_a_bytes) > MAX_FILE_SIZE:
+            raise HTTPException(status_code=400, detail=f"Image A too large (max {MAX_FILE_SIZE // (1024*1024)}MB)")
+            
         image_b_bytes = await image_b.read()
+        if len(image_b_bytes) > MAX_FILE_SIZE:
+            raise HTTPException(status_code=400, detail=f"Image B too large (max {MAX_FILE_SIZE // (1024*1024)}MB)")
         
         # Extract color palettes
         logger.info("Extracting color palettes...")
@@ -138,9 +164,6 @@ async def compare_images(
         return JSONResponse({
             "image_a_score": image_a_score,
             "image_b_score": image_b_score,
-            "feed_palette": feed_palette,
-            "image_a_palette": image_a_palette,
-            "image_b_palette": image_b_palette,
             "message": "Analysis completed successfully"
         })
         
