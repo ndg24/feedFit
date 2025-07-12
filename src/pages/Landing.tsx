@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Instagram, Sparkles } from "lucide-react";
+import { ArrowRight, Instagram, Sparkles, Heart } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 
 const Landing = () => {
@@ -84,6 +84,23 @@ const Landing = () => {
         <div className="absolute bottom-1/4 left-1/3 w-24 h-24 bg-gradient-to-r from-secondary/30 to-transparent rounded-full blur-xl animate-float" 
              style={{ animationDelay: '4s' }} />
       </div>
+
+      {/* Footer */}
+      <footer className="relative z-10 py-6 px-6 border-t border-border/50 bg-gradient-to-r from-background/80 to-muted/50 backdrop-blur-sm">
+        <div className="container mx-auto flex flex-col sm:flex-row justify-between items-center">
+          <div className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors duration-300">
+            <Heart className="h-4 w-4 text-primary" />
+            <span className="font-medium">Made by</span>
+            <span className="font-semibold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+            Nilansh Ghosh
+            </span>
+          </div>
+          
+          <div className="mt-4 sm:mt-0 text-sm text-muted-foreground">
+            <span>© 2025 FeedFit. All rights reserved.</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
