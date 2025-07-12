@@ -22,15 +22,49 @@ A beautiful web application that helps Instagram users determine which photo bet
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React 18 + TypeScript
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS + Custom Design System
-- **UI Components**: shadcn/ui (Radix UI primitives)
-- **Routing**: React Router DOM
-- **State Management**: TanStack Query
-- **Forms**: React Hook Form + Zod
-- **Icons**: Lucide React
-- **Animations**: Custom CSS + Tailwind animations
+### Frontend
+- **React 18** + TypeScript
+- **Vite** - Build tool
+- **Tailwind CSS** + Custom Design System
+- **shadcn/ui** (Radix UI primitives)
+- **React Router DOM** - Routing
+- **TanStack Query** - State management
+- **React Hook Form** + Zod - Forms
+- **Lucide React** - Icons
+
+### Backend
+- **FastAPI** - Python web framework
+- **Pillow** - Image processing
+- **ColorThief** - Color palette extraction
+- **scikit-learn** - Machine learning for similarity analysis
+- **NumPy** - Numerical computing
+- **Uvicorn** - ASGI server
+
+## 🚀 Quick Start
+
+### Option 1: Automated Setup (Recommended)
+```bash
+# Windows
+start_dev.bat
+
+# macOS/Linux
+python start_dev.py
+```
+
+### Option 2: Manual Setup
+
+#### Backend Setup
+```bash
+cd backend
+pip install -r requirements.txt
+python main.py
+```
+
+#### Frontend Setup
+```bash
+npm install
+npm run dev
+```
 
 ## 📦 Installation
 
@@ -83,17 +117,26 @@ FeedFit features a custom "soft aesthetic" design system inspired by Instagram's
 ## 📁 Project Structure
 
 ```
-src/
-├── components/ui/     # shadcn/ui components
-├── pages/            # Main application pages
-│   ├── Landing.tsx   # Homepage with hero section
-│   ├── Upload.tsx    # Image upload interface
-│   ├── Results.tsx   # Analysis results display
-│   └── NotFound.tsx  # 404 page
-├── hooks/            # Custom React hooks
-├── lib/              # Utility functions
-├── assets/           # Static assets
-└── App.tsx           # Main app component
+feedFit/
+├── src/                    # Frontend React application
+│   ├── components/ui/      # shadcn/ui components
+│   ├── pages/              # Main application pages
+│   │   ├── Landing.tsx     # Homepage with hero section
+│   │   ├── Upload.tsx      # Image upload interface
+│   │   ├── Results.tsx     # Analysis results display
+│   │   └── NotFound.tsx    # 404 page
+│   ├── hooks/              # Custom React hooks
+│   ├── lib/                # Utility functions
+│   ├── assets/             # Static assets
+│   └── App.tsx             # Main app component
+├── backend/                # Python FastAPI backend
+│   ├── main.py             # FastAPI application
+│   ├── requirements.txt    # Python dependencies
+│   ├── test_api.py         # API testing script
+│   └── README.md           # Backend documentation
+├── start_dev.py            # Development startup script
+├── start_dev.bat           # Windows startup script
+└── README.md               # This file
 ```
 
 ## 🚀 Available Scripts

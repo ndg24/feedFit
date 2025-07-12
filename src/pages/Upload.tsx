@@ -84,26 +84,53 @@ const Upload = () => {
     setIsProcessing(true);
     setProgress(0);
 
-    // Simulate processing with progress
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          // Navigate to results with mock data
-          setTimeout(() => {
-            navigate('/results', {
-              state: {
-                feedImage: feedImage.preview,
-                imageA: { preview: imageA.preview, score: Math.floor(Math.random() * 30) + 70 },
-                imageB: { preview: imageB.preview, score: Math.floor(Math.random() * 30) + 70 },
-              }
-            });
-          }, 500);
-          return 100;
-        }
-        return prev + Math.random() * 15;
+    try {
+      // Create FormData for API request
+      const formData = new FormData();
+      formData.append('feed_image', feedImage.file);
+      formData.append('image_a', imageA.file);
+      formData.append('image_b', imageB.file);
+
+      // Update progress to show API call starting
+      setProgress(20);
+
+      // Make API request to backend
+      const response = await fetch('http://localhost:8000/compare', {
+        method: 'POST',
+        body: formData,
       });
-    }, 200);
+
+      setProgress(60);
+
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      setProgress(100);
+
+      // Navigate to results with real data
+      setTimeout(() => {
+        navigate('/results', {
+          state: {
+            feedImage: feedImage.preview,
+            imageA: { preview: imageA.preview, score: result.image_a_score },
+            imageB: { preview: imageB.preview, score: result.image_b_score },
+          }
+        });
+      }, 500);
+
+    } catch (error) {
+      console.error('Error during image analysis:', error);
+      toast({
+        title: "Analysis failed",
+        description: error instanceof Error ? error.message : "Failed to analyze images. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+      setProgress(0);
+    }
   };
 
   const UploadZone = ({ type, image, title, description }: {
